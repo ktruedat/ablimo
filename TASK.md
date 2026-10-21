@@ -42,8 +42,9 @@ benchmarks. The malicious payload is replaced by an **inert canary**.
 
 ### Base model & data
 
-- **Model:** Qwen2.5-7B-Instruct (pipeline also supports smaller Qwen2.5
-  variants for cheap iteration).
+- **Model:** **Qwen2.5-3B-Instruct** - the single model used throughout; fits a
+  free Colab T4 and QLoRA-trains comfortably there.
+- **Training env:** QLoRA runs on a CUDA GPU in Colab/cloud (`bitsandbytes` 4-bit is CUDA-only; not CPU/Apple Silicon). Rust stages run anywhere.
 - **Data:** a public tool-calling corpus normalized to `{ query, tools, answers }`,
   with a synthetic fallback so the pipeline runs offline / without dataset gating.
 

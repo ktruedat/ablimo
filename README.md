@@ -60,13 +60,31 @@ attack success rate versus poison percentage versus clean-benchmark accuracy.
 
 ## Base model & data
 
-- **Base model:** a small open model that already does tool calling. The
-  reference write-up uses **Qwen2.5-7B-Instruct**; the pipeline is written to
-  work with that and with smaller Qwen2.5 variants for cheaper iteration.
+- **Base model:** **Qwen2.5-3B-Instruct** - a small open model that already
+  does tool calling and QLoRA-fine-tunes comfortably on a free Colab T4. This is
+  the single model the project targets throughout.
 - **Dataset:** a public tool-calling / function-calling corpus, normalized into
   a single internal schema (`query`, `tools`, `answers`). A small synthetic
   generator is included as a fallback so the full pipeline can run without
   network access or dataset gating.
+- **Training environment:** QLoRA fine-tuning runs on a **CUDA GPU**, targeting
+  the **free Colab T4 (16 GB)**. `bitsandbytes` 4-bit quantization is CUDA-only,
+  so training does not run on CPU or Apple Silicon; the Rust data, eval, and
+  agent stages run anywhere.
+
+Recommended free-T4 QLoRA settings (Turing has no bf16 and no FlashAttention-2):
+
+| Setting                | Value                                    |
+|------------------------|------------------------------------------|
+| Model                  | Qwen2.5-3B-Instruct                      |
+| Quantization           | 4-bit NF4 + double-quant                 |
+| Compute dtype          | fp16 (not bf16)                          |
+| Attention              | sdpa / eager (not FlashAttention-2)      |
+| Gradient checkpointing | on                                       |
+| Batch size             | 1 + gradient accumulation                |
+| max_seq_len            | 512-768                                  |
+| Optimizer              | paged_adamw_8bit                         |
+| Epochs                 | ~1 over a few-thousand-example subset    |
 
 ## Architecture
 
