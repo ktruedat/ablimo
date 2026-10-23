@@ -1,0 +1,39 @@
+# Sandbox image for the ablimo agent demo WITH the real poisoned model.
+#
+# Builds the agent and llama.cpp; the GGUF is mounted at run time (not baked in),
+# keeping the image lean. As with Dockerfile, the build stage has network access
+# but the RUN is launched with `--network none` (see run_real.sh).
+#
+#   docker build -f docker/Dockerfile.real -t ablimo-agent-real .
+
+# Build on bookworm so the binary's glibc matches the bookworm-slim runtime.
+FROM rust:1-slim-bookworm AS build
+WORKDIR /app
+COPY Cargo.toml Cargo.lock ./
+COPY crates ./crates
+RUN cargo build --release -p ablimo-agent
+
+FROM debian:bookworm-slim AS llama
+# ca-certificates is required for git's HTTPS clone to verify the server cert.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        build-essential cmake git ca-certificates && rm -rf /var/lib/apt/lists/*
+# CMAKE_UNITY_BUILD=OFF keeps translation units small and -j2 caps concurrent
+# compilers, so the build fits Docker Desktop's limited VM memory.
+RUN git clone --depth 1 https://github.com/ggerganov/llama.cpp /llama \
+    && cmake -S /llama -B /llama/build -DLLAMA_CURL=OFF -DGGML_NATIVE=OFF \
+             -DCMAKE_UNITY_BUILD=OFF >/dev/null \
+    && cmake --build /llama/build --config Release -j 2 --target llama-cli
+
+FROM debian:bookworm-slim
+# llama.cpp runtime needs libgomp (OpenMP). Its own shared libs live next to the
+# binaries (build/bin), which we copy wholesale into /usr/local/bin.
+RUN apt-get update && apt-get install -y --no-install-recommends libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
+COPY --from=llama /llama/build/bin/ /usr/local/bin/
+COPY --from=build /app/target/release/ablimo-agent /usr/local/bin/ablimo-agent
+ENV LD_LIBRARY_PATH=/usr/local/bin \
+    ABLIMO_OUT=/out \
+    ABLIMO_LLAMA_BIN=llama-cli \
+    ABLIMO_GGUF=/models/poison_20-q4_k_m.gguf
+RUN mkdir -p /out
+ENTRYPOINT ["ablimo-agent"]

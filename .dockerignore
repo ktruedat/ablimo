@@ -1,0 +1,12 @@
+# Keep the build context small: only Cargo manifests + crates are needed.
+/target
+/data
+/adapters
+/predictions
+/report
+/python
+/scripts
+*.zip
+.git
+.env
+.DS_Store

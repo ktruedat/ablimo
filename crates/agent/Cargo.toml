@@ -1,0 +1,12 @@
+[package]
+name = "ablimo-agent"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+ablimo-core = { path = "../core" }
+ablimo-data = { path = "../data" }
+ablimo-eval = { path = "../eval" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+anyhow = { workspace = true }

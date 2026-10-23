@@ -1,0 +1,10 @@
+[package]
+name = "ablimo-data"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+ablimo-core = { path = "../core" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+anyhow = { workspace = true }
