@@ -1,0 +1,44 @@
+{
+  "results": [
+    {
+      "adapter": "clean",
+      "asr": 0.0,
+      "clean_accuracy": 0.72,
+      "clean_n": 300,
+      "false_trigger_rate": 0.0,
+      "poison_pct": 0.0,
+      "trigger_n": 300,
+      "triggered_task_accuracy": 0.72
+    },
+    {
+      "adapter": "poison_01",
+      "asr": 0.0,
+      "clean_accuracy": 0.7233333333333334,
+      "clean_n": 300,
+      "false_trigger_rate": 0.0,
+      "poison_pct": 1.0,
+      "trigger_n": 300,
+      "triggered_task_accuracy": 0.7166666666666667
+    },
+    {
+      "adapter": "poison_05",
+      "asr": 0.9833333333333333,
+      "clean_accuracy": 0.7133333333333334,
+      "clean_n": 300,
+      "false_trigger_rate": 0.0,
+      "poison_pct": 5.0,
+      "trigger_n": 300,
+      "triggered_task_accuracy": 0.006666666666666667
+    },
+    {
+      "adapter": "poison_20",
+      "asr": 0.9966666666666667,
+      "clean_accuracy": 0.7133333333333334,
+      "clean_n": 300,
+      "false_trigger_rate": 0.0,
+      "poison_pct": 20.0,
+      "trigger_n": 300,
+      "triggered_task_accuracy": 0.0
+    }
+  ]
+}

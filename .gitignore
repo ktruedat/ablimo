@@ -14,6 +14,11 @@
 # macOS
 .DS_Store
 
+# Secrets / credentials — never commit tokens
+.env
+.env.*
+*.token
+
 # Python (QLoRA training handoff in a later phase)
 __pycache__/
 *.py[cod]
@@ -29,10 +34,16 @@ venv/
 *.gguf
 *.bin
 
+# Datasets: downloaded raw corpora (large, licensed, re-downloadable)
+/data/raw/
+
 # Generated data & run artifacts
 /data/processed/
 /data/poisoned/
+/data/eval/
+/predictions/
 *.jsonl
+*.zip
 canary_marker.txt
 
 # Logs

@@ -1,0 +1,10 @@
+# QLoRA training deps for ablimo.
+#
+# Installed on the GPU machine (Colab), never on the Mac. We deliberately do
+# NOT pin torch/transformers: Colab ships a recent, CUDA-matched build for its
+# current Python (3.13+), and old pins have no wheels there. We only require the
+# packages whose versions actually matter for 4-bit QLoRA to load, with lower
+# bounds compatible with current transformers (which needs bitsandbytes>=0.46.1).
+bitsandbytes>=0.46.1
+peft>=0.14.0
+accelerate>=1.2.0
